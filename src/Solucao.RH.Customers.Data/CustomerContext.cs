@@ -37,6 +37,9 @@ public class CustomerContext(DbContextOptions<CustomerContext> options, INotific
         {
             relationship.DeleteBehavior = DeleteBehavior.Cascade;
         }
+
+        modelBuilder.HasSequence<int>("SQ_Customer").StartsAt(1).IncrementsBy(1);
+
         base.OnModelCreating(modelBuilder);
     }
 

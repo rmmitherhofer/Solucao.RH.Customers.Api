@@ -10,6 +10,7 @@ using Solucao.RH.Customers.Api.Dto.Responses;
 using Solucao.RH.Customers.Business.Filters;
 using Solucao.RH.Customers.Business.Interfaces.Repositories;
 using Solucao.RH.Customers.Business.Models;
+using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
 
 namespace Solucao.RH.Customers.Api.Controllers;
@@ -30,11 +31,13 @@ public class CustomerController : MainController
     }
 
     [HttpGet]
+    [SwaggerOperation(Summary = "Serviço que obtem todos os clientes/empresas cadastradas em forma de lista")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(IEnumerable<CustomerResponse>))]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
     public async Task<IActionResult> Get() => CustomResponse(_mapper.Map<IEnumerable<CustomerResponse>>(await _customerRepository.GetAll()));
 
     [HttpGet("paginate")]
+    [SwaggerOperation(Summary = "Serviço que obtem todos os clientes/empresas cadastradas em forma de lista paginada")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(CustomersPaginatedResponse))]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
     public async Task<IActionResult> GetPaginated([FromQuery] CustomerFilterRequest request)
@@ -47,11 +50,13 @@ public class CustomerController : MainController
     }
 
     [HttpGet("{id}")]
+    [SwaggerOperation(Summary = "Serviço para obter um cliente/empresa atraves do ID")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(CustomerResponse))]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
     public async Task<IActionResult> Get(Guid id) => CustomResponse(_mapper.Map<CustomerResponse>(await _customerRepository.GetById(id)));
 
     [HttpPost]
+    [SwaggerOperation(Summary = "Serviço para cadastrar um novo cliente/empresa")]
     [ProducesResponseType((int)HttpStatusCode.Created)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ValidationResponse))]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
@@ -65,7 +70,7 @@ public class CustomerController : MainController
             return CustomResponse();
         }
 
-        customer = new Customer(request.Cnpj, request.Name, request.Telephone, request.Email, request.Cellphone, request.Site);
+        customer = new Customer(request.Cnpj, request.Name, request.Telephone, request.Cellphone, request.Email, request.Site, request.FoundationDate, request.StateRegistration, request.MunicipalRegistration, request.Segment, request.CompanySize, request.UserId, request.Status, request.BusinessArea, request.Classification, request.Type, request.Origin);
 
         foreach (var address in request.Addresses)
         {
@@ -85,10 +90,11 @@ public class CustomerController : MainController
     }
 
     [HttpPost("{customerId}/address")]
+    [SwaggerOperation(Summary = "Serviço para cadastrar um novo endereço para um cliente/empresa existente")]
     [ProducesResponseType((int)HttpStatusCode.Created)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ValidationResponse))]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
-    public async Task<IActionResult> PostAddress([FromRoute] Guid customerId, [FromBody] AddAddressRequest request)
+    public async Task<IActionResult> PostAddress(Guid customerId, AddAddressRequest request)
     {
         var customer = await _customerRepository.GetById(customerId);
 
@@ -108,10 +114,11 @@ public class CustomerController : MainController
     }
 
     [HttpPost("{customerId}/contact")]
+    [SwaggerOperation(Summary = "Serviço para cadastrar um novo contato para um cliente/empresa existente")]
     [ProducesResponseType((int)HttpStatusCode.Created)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ValidationResponse))]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
-    public async Task<IActionResult> PostContact([FromRoute] Guid customerId, [FromBody] AddContactRequest request)
+    public async Task<IActionResult> PostContact(Guid customerId, AddContactRequest request)
     {
         var customer = await _customerRepository.GetById(customerId);
 
@@ -131,6 +138,7 @@ public class CustomerController : MainController
     }
 
     [HttpPut("{id}")]
+    [SwaggerOperation(Summary = "Serviço para alterar os dados de um cliente/empresa existente")]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ValidationResponse))]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
@@ -144,7 +152,7 @@ public class CustomerController : MainController
             return CustomResponse();
         }
 
-        cliente.Update(request.Name, request.Telephone, request.Email, request.Cellphone, request.Site);
+        cliente.Update(request.Telephone, request.Cellphone, request.Email, request.Site, request.FoundationDate, request.StateRegistration, request.MunicipalRegistration, request.Segment, request.CompanySize, request.UserId, request.Status, request.BusinessArea, request.Classification, request.Type, request.Origin);
 
         _customerRepository.Update(cliente);
 
@@ -154,6 +162,7 @@ public class CustomerController : MainController
     }
 
     [HttpDelete("{id}")]
+    [SwaggerOperation(Summary = "Serviço para remover os dados de um cliente/empresa existente")]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ValidationResponse))]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]

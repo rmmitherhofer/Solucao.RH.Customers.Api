@@ -12,7 +12,7 @@ public class Contact : Entity
     public string? Email { get; private set; }
     public string? Department { get; private set; }
     public string? Position { get; private set; }
-    public bool IsDeleted { get; private set; } = false;
+    public bool IsDeleted { get; private set; }
 
     public Customer Customer { get; protected set; }
     public Guid CustomerId { get; private set; }

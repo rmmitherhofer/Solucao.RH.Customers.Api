@@ -16,6 +16,9 @@ public class CustomerMapping : IEntityTypeConfiguration<Customer>
 
         builder.Property(c => c.DateChanged);
 
+        builder.Property(c => c.Code)
+            .HasDefaultValueSql("NEXT VALUE FOR SQ_Customer");
+
         builder.Property(c => c.Cnpj)
             .HasColumnType("varchar(14)")
             .IsRequired();
@@ -32,6 +35,38 @@ public class CustomerMapping : IEntityTypeConfiguration<Customer>
 
         builder.Property(c => c.Email)
             .HasColumnType($"varchar({Email.AddressMaxLength})");
+
+        builder.Property(c => c.FoundationDate);
+
+        builder.Property(c => c.StateRegistration)
+            .HasColumnType("varchar(150)");
+
+        builder.Property(c => c.MunicipalRegistration)
+            .HasColumnType("varchar(150)");
+
+        builder.Property(c => c.Segment)
+            .HasColumnType("varchar(150)");
+
+        builder.Property(c => c.CompanySize)
+            .HasColumnType("varchar(150)");
+
+        builder.Property(c => c.UserId);
+
+        builder.Property(c => c.Status)
+            .IsRequired()
+            .HasColumnType("varchar(150)");
+
+        builder.Property(c => c.BusinessArea)
+            .HasColumnType("varchar(150)");
+
+        builder.Property(c => c.Classification)
+            .HasColumnType("varchar(150)");
+
+        builder.Property(c => c.Type)
+            .HasColumnType("varchar(150)");
+
+        builder.Property(c => c.Origin)
+            .HasColumnType("varchar(150)");
 
         builder.HasMany(c => c.Addresses)
             .WithOne(a => a.Customer)
