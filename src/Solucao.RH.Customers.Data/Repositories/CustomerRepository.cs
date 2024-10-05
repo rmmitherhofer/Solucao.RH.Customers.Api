@@ -1,10 +1,10 @@
 ﻿using Api.Core;
+using Api.Data.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Solucao.RH.Customers.Business.Filters;
 using Solucao.RH.Customers.Business.Interfaces.Repositories;
 using Solucao.RH.Customers.Business.Models;
 using Solucao.RH.Customers.Data.Extensions;
-using Api.Data.Extensions;
 
 namespace Solucao.RH.Customers.Data.Repositories;
 
@@ -29,7 +29,7 @@ public class CustomerRepository : ICustomerRepository
             .Include(c => c.Contacts)
             .OrderBy(filter.OrderBy)
             .Page(filter.PageNumber, filter.PageSize)
-            .AsNoTracking()
+            .AsNoTracking()             
             .ToListAsync();
 
         return (customers, pageCount, totalRecords);
@@ -39,17 +39,23 @@ public class CustomerRepository : ICustomerRepository
         var customers = await _context.Customers
             .Include(c => c.Addresses)
             .Include(c => c.Contacts)
+            .AsNoTracking()
             .ToListAsync();
 
         return customers;
     }
 
     public async Task<Customer> GetByCnpj(string cnpj) 
-        => await _context.Customers.Where(c => c.Cnpj == cnpj).FirstOrDefaultAsync();
-    public async Task<Customer?> GetById(Guid id) => await _context.Customers
+        => await _context.Customers.Where(c => c.Cnpj == cnpj)
             .Include(c => c.Addresses)
             .Include(c => c.Contacts)
-            .FirstOrDefaultAsync(c => c.Id == id);
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
+
+    public async Task<Customer?> GetById(Guid id) => await _context.Customers.Where(c => c.Id == id)
+            .Include(c => c.Addresses)
+            .Include(c => c.Contacts)
+            .FirstOrDefaultAsync();
     public void Add(Customer customer) => _context.Customers.Add(customer);
     public void Update(Customer customer) => _context.Customers.Update(customer);
     public void Remove(Customer customer) => _context.Customers.Remove(customer);
