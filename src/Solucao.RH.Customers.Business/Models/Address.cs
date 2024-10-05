@@ -4,7 +4,7 @@ namespace Solucao.RH.Customers.Business.Models;
 
 public class Address : Entity
 {
-    public string Street { get; private set; }
+    public string? Street { get; private set; }
     public string? Number { get; private set; }
     public string? Complement { get; private set; }
     public string? District { get; private set; }
@@ -18,7 +18,7 @@ public class Address : Entity
 
     protected Address() { }
 
-    public Address(Guid customerId, string street, string? number, string? complement, string? district, string? zipCode, string city, string state)
+    public Address(Guid customerId, string? street, string? number, string? complement, string? district, string? zipCode, string city, string state)
     {
         CustomerId = customerId;
         Street = street;
@@ -30,7 +30,7 @@ public class Address : Entity
         State = state;
     }
 
-    public void Update(string street, string? number, string? complement, string? district, string? zipCode, string city, string state)
+    public void Update(string? street, string? number, string? complement, string? district, string? zipCode, string city, string state)
     {
         Street = street;
         Number = number;

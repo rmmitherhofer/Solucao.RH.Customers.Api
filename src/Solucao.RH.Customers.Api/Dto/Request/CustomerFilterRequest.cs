@@ -25,5 +25,9 @@ public class CustomerFilterRequest : FilterRequest
     /// </summary>
     public string? Email { get; set; }
 
+    /// <summary>
+    /// Status do cadastro
+    /// </summary>
+    public string Status { get; set; }
 }
 

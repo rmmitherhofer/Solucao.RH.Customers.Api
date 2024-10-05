@@ -36,7 +36,7 @@ public class CustomerRepository : ICustomerRepository
     }
     public async Task<IEnumerable<Customer>?> GetAll()
     {
-        var customers =  await _context.Customers
+        var customers = await _context.Customers
             .Include(c => c.Addresses)
             .Include(c => c.Contacts)
             .ToListAsync();
@@ -44,8 +44,12 @@ public class CustomerRepository : ICustomerRepository
         return customers;
     }
 
-    public async Task<Customer> GetByCnpj(string cnpj) => await _context.Customers.Where(c => c.Cnpj == cnpj).FirstOrDefaultAsync();
-    public async Task<Customer?> GetById(Guid id) => await _context.Customers.FindAsync(id);
+    public async Task<Customer> GetByCnpj(string cnpj) 
+        => await _context.Customers.Where(c => c.Cnpj == cnpj).FirstOrDefaultAsync();
+    public async Task<Customer?> GetById(Guid id) => await _context.Customers
+            .Include(c => c.Addresses)
+            .Include(c => c.Contacts)
+            .FirstOrDefaultAsync(c => c.Id == id);
     public void Add(Customer customer) => _context.Customers.Add(customer);
     public void Update(Customer customer) => _context.Customers.Update(customer);
     public void Remove(Customer customer) => _context.Customers.Remove(customer);

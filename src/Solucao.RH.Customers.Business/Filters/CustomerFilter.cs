@@ -9,6 +9,7 @@ public class CustomerFilter : Filter
     public string? Telephone { get; set; }
     public string? Cellphone { get; set; }
     public string? Email { get; set; }
+    public string? Status { get; set; }
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
 }

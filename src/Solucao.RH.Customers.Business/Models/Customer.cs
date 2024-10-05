@@ -12,17 +12,17 @@ public class Customer : Entity, IAggregateRoot
     public string? Cellphone { get; private set; }
     public string? Email { get; private set; }
     public string? Site { get; private set; }
-    public DateTime? FoundationDate { get; set; }
-    public string? StateRegistration { get; set; }
-    public string? MunicipalRegistration { get; set; }
-    public string? Segment { get; set; }
-    public string? CompanySize { get; set; }
-    public Guid? UserId { get; set; }
-    public string Status { get; set; }
-    public string? BusinessArea { get; set; }
-    public string? Classification { get; set; }
-    public string? Type { get; set; }
-    public string? Origin { get; set; }
+    public DateTime? FoundationDate { get; private set; }
+    public string? StateRegistration { get; private set; }
+    public string? MunicipalRegistration { get; private set; }
+    public string? Segment { get; private set; }
+    public string? CompanySize { get; private set; }
+    public Guid? UserId { get; private set; }
+    public string Status { get; private set; }
+    public string? BusinessArea { get; private set; }
+    public string? Classification { get; private set; }
+    public string? Type { get; private set; }
+    public string? Origin { get; private set; }
 
     private List<Address> _addresses = [];
     public IReadOnlyCollection<Address> Addresses => _addresses.AsReadOnly();
@@ -32,8 +32,8 @@ public class Customer : Entity, IAggregateRoot
 
     protected Customer() { }
 
-    public Customer(string cnpj, string name, string? telephone, string? cellphone, string? email, string? site, 
-        DateTime? foundationDate, string? stateRegistration, string? municipalRegistration, string? segment, string? companySize, 
+    public Customer(string cnpj, string name, string? telephone, string? cellphone, string? email, string? site,
+        DateTime? foundationDate, string? stateRegistration, string? municipalRegistration, string? segment, string? companySize,
         Guid? userId, string status, string? businessArea, string? classification, string? type, string? origin)
     {
         Cnpj = new Cnpj(cnpj).Number;

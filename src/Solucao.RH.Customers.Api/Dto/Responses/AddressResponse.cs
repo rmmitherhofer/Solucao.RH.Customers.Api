@@ -7,7 +7,7 @@ public class AddressResponse : Response
     /// <summary>
     /// Logradouro - Nome da Rua, Avenida, Estrada do endereço
     /// </summary>
-    public string Street { get; set; }
+    public string? Street { get; set; }
     /// <summary>
     /// Numero - Numero ou identificação do imóvel
     /// </summary>

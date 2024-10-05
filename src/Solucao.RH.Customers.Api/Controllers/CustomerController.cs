@@ -34,13 +34,14 @@ public class CustomerController : MainController
     [SwaggerOperation(Summary = "Serviço que obtem todos os clientes/empresas cadastradas em forma de lista")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(IEnumerable<CustomerResponse>))]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
-    public async Task<IActionResult> Get() => CustomResponse(_mapper.Map<IEnumerable<CustomerResponse>>(await _customerRepository.GetAll()));
+    public async Task<IActionResult> Get() 
+        => CustomResponse(_mapper.Map<IEnumerable<CustomerResponse>>(await _customerRepository.GetAll()));
 
     [HttpGet("paginate")]
     [SwaggerOperation(Summary = "Serviço que obtem todos os clientes/empresas cadastradas em forma de lista paginada")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(CustomersPaginatedResponse))]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
-    public async Task<IActionResult> GetPaginated([FromQuery] CustomerFilterRequest request)
+    public async Task<IActionResult> Get([FromQuery] CustomerFilterRequest request)
     {
         var (customers, pageCount, totalRecords) = await _customerRepository.GetPaginated(_mapper.Map<CustomerFilter>(request));
 
@@ -49,11 +50,12 @@ public class CustomerController : MainController
         return CustomResponse(response);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{customerId}")]
     [SwaggerOperation(Summary = "Serviço para obter um cliente/empresa atraves do ID")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(CustomerResponse))]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
-    public async Task<IActionResult> Get(Guid id) => CustomResponse(_mapper.Map<CustomerResponse>(await _customerRepository.GetById(id)));
+    public async Task<IActionResult> Get(Guid customerId) 
+        => CustomResponse(_mapper.Map<CustomerResponse>(await _customerRepository.GetById(customerId)));
 
     [HttpPost]
     [SwaggerOperation(Summary = "Serviço para cadastrar um novo cliente/empresa")]
@@ -70,7 +72,9 @@ public class CustomerController : MainController
             return CustomResponse();
         }
 
-        customer = new Customer(request.Cnpj, request.Name, request.Telephone, request.Cellphone, request.Email, request.Site, request.FoundationDate, request.StateRegistration, request.MunicipalRegistration, request.Segment, request.CompanySize, request.UserId, request.Status, request.BusinessArea, request.Classification, request.Type, request.Origin);
+        customer = new Customer(request.Cnpj, request.Name, request.Telephone, request.Cellphone, request.Email, request.Site, request.FoundationDate, 
+            request.StateRegistration, request.MunicipalRegistration, request.Segment, request.CompanySize, request.UserId, request.Status, 
+            request.BusinessArea, request.Classification, request.Type, request.Origin);
 
         foreach (var address in request.Addresses)
         {
@@ -89,97 +93,51 @@ public class CustomerController : MainController
         return CustomResponse();
     }
 
-    [HttpPost("{customerId}/address")]
-    [SwaggerOperation(Summary = "Serviço para cadastrar um novo endereço para um cliente/empresa existente")]
-    [ProducesResponseType((int)HttpStatusCode.Created)]
-    [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ValidationResponse))]
-    [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
-    public async Task<IActionResult> PostAddress(Guid customerId, AddAddressRequest request)
-    {
-        var customer = await _customerRepository.GetById(customerId);
-
-        if (customer is null)
-        {
-            Notify(nameof(customerId), $"Cliente {customerId} nao localizado.");
-            return CustomResponse();
-        }
-
-        customer.AddAddress(request.Street, request.Number, request.Complement, request.District, request.ZipCode, request.City, request.State);
-
-        _customerRepository.Update(customer);
-
-        await _customerRepository.UnitOfWork.Commit();
-
-        return CustomResponse();
-    }
-
-    [HttpPost("{customerId}/contact")]
-    [SwaggerOperation(Summary = "Serviço para cadastrar um novo contato para um cliente/empresa existente")]
-    [ProducesResponseType((int)HttpStatusCode.Created)]
-    [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ValidationResponse))]
-    [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
-    public async Task<IActionResult> PostContact(Guid customerId, AddContactRequest request)
-    {
-        var customer = await _customerRepository.GetById(customerId);
-
-        if (customer is null)
-        {
-            Notify(nameof(customerId), $"Cliente {customerId} nao localizado.");
-            return CustomResponse();
-        }
-
-        customer.AddContact(request.Name, request.Telephone, request.CellPhone, request.WhatsApp, request.Email, request.Department, request.Position);
-
-        _customerRepository.Update(customer);
-
-        await _customerRepository.UnitOfWork.Commit();
-
-        return CustomResponse();
-    }
-
-    [HttpPut("{id}")]
+    [HttpPut("{customerId}")]
     [SwaggerOperation(Summary = "Serviço para alterar os dados de um cliente/empresa existente")]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ValidationResponse))]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
-    public async Task<IActionResult> Put(Guid id, UpdateCustomerRequest request)
+    public async Task<IActionResult> Put(Guid customerId, UpdateCustomerRequest request)
     {
-        var cliente = await _customerRepository.GetById(id);
+        var customer = await _customerRepository.GetById(customerId);
 
-        if (cliente is null)
+        if (customer is null)
         {
-            Notify(nameof(id), $"Cliente {id} nao localizado.");
+            Notify(nameof(customerId), $"Cliente {customerId} nao localizado.");
             return CustomResponse();
         }
 
-        cliente.Update(request.Telephone, request.Cellphone, request.Email, request.Site, request.FoundationDate, request.StateRegistration, request.MunicipalRegistration, request.Segment, request.CompanySize, request.UserId, request.Status, request.BusinessArea, request.Classification, request.Type, request.Origin);
+        customer.Update(request.Telephone, request.Cellphone, request.Email, request.Site, request.FoundationDate, request.StateRegistration, 
+            request.MunicipalRegistration, request.Segment, request.CompanySize, request.UserId, request.Status, request.BusinessArea, 
+            request.Classification, request.Type, request.Origin);
 
-        _customerRepository.Update(cliente);
+        _customerRepository.Update(customer);
 
         await _customerRepository.UnitOfWork.Commit();
 
         return CustomResponse();
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{customerId}")]
     [SwaggerOperation(Summary = "Serviço para remover os dados de um cliente/empresa existente")]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ValidationResponse))]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid customerId)
     {
-        var cliente = await _customerRepository.GetById(id);
+        var customer = await _customerRepository.GetById(customerId);
 
-        if (cliente is null)
+        if (customer is null)
         {
-            Notify(nameof(id), $"Cliente {id} nao localizado.");
+            Notify(nameof(customerId), $"Cliente {customerId} nao localizado.");
             return CustomResponse();
         }
 
-        _customerRepository.Remove(cliente);
+        _customerRepository.Remove(customer);
 
         await _customerRepository.UnitOfWork.Commit();
 
         return CustomResponse();
-    }
+    }    
 }

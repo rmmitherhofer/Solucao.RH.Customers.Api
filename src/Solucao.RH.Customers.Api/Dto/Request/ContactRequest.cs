@@ -1,6 +1,6 @@
 ﻿namespace Solucao.RH.Customers.Api.Dto.Request;
 
-public abstract class ContactRequest
+public class ContactRequest
 {
     /// <summary>
     /// Nome do contato

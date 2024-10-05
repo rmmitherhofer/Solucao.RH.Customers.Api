@@ -1,10 +1,13 @@
 ﻿using Api.Responses;
-using Solucao.RH.Customers.Api.Dto.Request;
 
 namespace Solucao.RH.Customers.Api.Dto.Responses;
 
 public class CustomerResponse : Response
 {
+    /// <summary>
+    /// Id do cliente
+    /// </summary>
+    public Guid Id { get; set; }
     /// <summary>
     /// Codigo do cliente
     /// </summary>
@@ -81,10 +84,10 @@ public class CustomerResponse : Response
     /// <summary>
     /// Lista de endereços
     /// </summary>
-    public IEnumerable<AddAddressRequest> Addresses { get; set; }
+    public IEnumerable<AddressResponse> Addresses { get; set; }
     /// <summary>
     /// Lista de contatos
     /// </summary>
-    public IEnumerable<AddContactRequest> Contacts { get; set; }
+    public IEnumerable<ContactResponse> Contacts { get; set; }
 
 }

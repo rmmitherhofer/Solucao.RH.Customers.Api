@@ -1,6 +1,6 @@
 ﻿namespace Solucao.RH.Customers.Api.Dto.Request;
 
-public abstract class AddressRequest
+public class AddressRequest
 {
     /// <summary>
     /// Logradouro - Nome da Rua, Avenida, Estrada do endereço
@@ -36,10 +36,4 @@ public abstract class AddressRequest
 public class AddAddressRequest : AddressRequest { }
 
 
-public class UpdateAddressRequest : AddressRequest
-{
-    /// <summary>
-    /// Id do cliente
-    /// </summary>
-    public Guid CustomerId { get; set; }
-}
+public class UpdateAddressRequest : AddressRequest { }

@@ -16,8 +16,7 @@ public class AddressMapping : IEntityTypeConfiguration<Address>
         builder.Property(a => a.DateChanged);
 
         builder.Property(a => a.Street)
-            .HasColumnType("varchar(150)")
-            .IsRequired();
+            .HasColumnType("varchar(150)");
 
         builder.Property(a => a.Number)
             .HasColumnType("varchar(10)");

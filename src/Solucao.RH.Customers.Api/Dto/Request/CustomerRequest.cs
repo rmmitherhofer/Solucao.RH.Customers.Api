@@ -81,11 +81,11 @@ public class AddCustomerRequest : CustomerRequest
     /// <summary>
     /// Lista de endereços
     /// </summary>
-    public IEnumerable<AddAddressRequest> Addresses { get; set; }
+    public IEnumerable<AddAddressRequest> Addresses { get; set; } = [];
     /// <summary>
     /// Lista de contatos
     /// </summary>
-    public IEnumerable<AddContactRequest> Contacts { get; set; }
+    public IEnumerable<AddContactRequest> Contacts { get; set; } = [];
 }
 
 public class UpdateCustomerRequest : CustomerRequest { }
