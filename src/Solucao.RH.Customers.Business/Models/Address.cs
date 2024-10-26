@@ -4,13 +4,14 @@ namespace Solucao.RH.Customers.Business.Models;
 
 public class Address : Entity
 {
-    public string? Street { get; private set; }
+    public string Street { get; private set; }
     public string? Number { get; private set; }
     public string? Complement { get; private set; }
     public string? District { get; private set; }
-    public string? ZipCode { get; private set; }
+    public string ZipCode { get; private set; }
     public string City { get; private set; }
     public string State { get; private set; }
+    public string Country { get; private set; }
     public bool IsDeleted { get; private set; }
 
     public Customer Customer { get; protected set; }
@@ -18,7 +19,7 @@ public class Address : Entity
 
     protected Address() { }
 
-    public Address(Guid customerId, string? street, string? number, string? complement, string? district, string? zipCode, string city, string state)
+    public Address(Guid customerId, string? street, string? number, string? complement, string? district, string? zipCode, string city, string state, string country)
     {
         CustomerId = customerId;
         Street = street;
@@ -28,9 +29,10 @@ public class Address : Entity
         ZipCode = zipCode;
         City = city;
         State = state;
+        Country = country;
     }
 
-    public void Update(string? street, string? number, string? complement, string? district, string? zipCode, string city, string state)
+    public void Update(string? street, string? number, string? complement, string? district, string? zipCode, string city, string state, string country)
     {
         Street = street;
         Number = number;
@@ -39,6 +41,7 @@ public class Address : Entity
         ZipCode = zipCode;
         City = city;
         State = state;
+        Country = country;
     }
 
     public void Delete()

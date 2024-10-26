@@ -78,7 +78,7 @@ public class CustomerController : MainController
 
         foreach (var address in request.Addresses)
         {
-            customer.AddAddress(address.Street, address.Number, address.Complement, address.District, address.ZipCode, address.City, address.State);
+            customer.AddAddress(address.Street, address.Number, address.Complement, address.District, address.ZipCode, address.City, address.State, address.Country);
         }
 
         foreach (var contact in request.Contacts)

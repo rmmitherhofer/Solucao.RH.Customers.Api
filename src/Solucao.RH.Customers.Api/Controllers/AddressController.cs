@@ -46,7 +46,7 @@ public class AddressController : MainController
             return CustomResponse();
         }
 
-        customer.AddAddress(request.Street, request.Number, request.Complement, request.District, request.ZipCode, request.City, request.State);
+        customer.AddAddress(request.Street, request.Number, request.Complement, request.District, request.ZipCode, request.City, request.State, request.Country);
 
         _customerRepository.Update(customer);
 
@@ -78,7 +78,7 @@ public class AddressController : MainController
             return CustomResponse();
         }
 
-        address.Update(request.Street, request.Number, request.Complement, request.District, request.ZipCode, request.City, request.State);
+        address.Update(request.Street, request.Number, request.Complement, request.District, request.ZipCode, request.City, request.State, request.Country);
 
         _customerRepository.Update(address);
 

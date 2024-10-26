@@ -76,11 +76,11 @@ public class Customer : Entity, IAggregateRoot
         Origin = origin;
     }
 
-    public void AddAddress(string street, string? number, string? complement, string? district, string? zipCode, string city, string state)
+    public void AddAddress(string street, string? number, string? complement, string? district, string? zipCode, string city, string state, string country)
     {
         _addresses ??= [];
 
-        _addresses.Add(new(Id, street, number, complement, district, zipCode, city, state));
+        _addresses.Add(new(Id, street, number, complement, district, zipCode, city, state, country));
     }
 
     public void AddContact(string name, string? telephone, string? cellPhone, string? whatsApp, string? email, string? department, string? position)
