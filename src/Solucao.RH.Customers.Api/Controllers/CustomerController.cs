@@ -1,6 +1,7 @@
 ﻿using Api.Responses;
 using Api.Service.Controllers;
 using AutoMapper;
+using Common.Core.Enums;
 using Common.Notifications.Interfaces;
 using Core.ValueObjects;
 using Extensoes;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Solucao.RH.Customers.Api.Dto.Request;
 using Solucao.RH.Customers.Api.Dto.Responses;
 using Solucao.RH.Customers.Business.Filters;
+using Solucao.RH.Customers.Business.Interfaces.HttpServices;
 using Solucao.RH.Customers.Business.Interfaces.Repositories;
 using Solucao.RH.Customers.Business.Models;
 using Swashbuckle.AspNetCore.Annotations;
@@ -19,22 +21,22 @@ namespace Solucao.RH.Customers.Api.Controllers;
 [Route("api/v{version:ApiVersion}/customer")]
 public class CustomerController : MainController
 {
-    private readonly ILogger<CustomerController> _logger;
     private readonly ICustomerRepository _customerRepository;
+    private readonly ICustomerHistHttpService _customerHistHttpService;
     private readonly IMapper _mapper;
 
-    public CustomerController(INotificationHandler notification, ILogger<CustomerController> logger, ICustomerRepository customerRepository, IMapper mapper) : base(notification)
+    public CustomerController(INotificationHandler notification, ICustomerRepository customerRepository, IMapper mapper, ICustomerHistHttpService customerHistHttpService) : base(notification)
     {
-        _logger = logger;
         _customerRepository = customerRepository;
         _mapper = mapper;
+        _customerHistHttpService = customerHistHttpService;
     }
 
     [HttpGet]
     [SwaggerOperation(Summary = "Serviço que obtem todos os clientes/empresas cadastradas em forma de lista")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(IEnumerable<CustomerResponse>))]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
-    public async Task<IActionResult> Get() 
+    public async Task<IActionResult> Get()
         => CustomResponse(_mapper.Map<IEnumerable<CustomerResponse>>(await _customerRepository.GetAll()));
 
     [HttpGet("paginate")]
@@ -54,7 +56,7 @@ public class CustomerController : MainController
     [SwaggerOperation(Summary = "Serviço para obter um cliente/empresa atraves do ID")]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(CustomerResponse))]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
-    public async Task<IActionResult> Get(Guid customerId) 
+    public async Task<IActionResult> Get(Guid customerId)
         => CustomResponse(_mapper.Map<CustomerResponse>(await _customerRepository.GetById(customerId)));
 
     [HttpPost]
@@ -64,6 +66,8 @@ public class CustomerController : MainController
     [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
     public async Task<IActionResult> Post(AddCustomerRequest request)
     {
+        if (!ModelState.IsValid) return CustomResponse(ModelState);
+
         var customer = await _customerRepository.GetByCnpj(new Cnpj(request.Cnpj).Number);
 
         if (customer is not null)
@@ -72,23 +76,15 @@ public class CustomerController : MainController
             return CustomResponse();
         }
 
-        customer = new Customer(request.Cnpj, request.Name, request.Telephone, request.Cellphone, request.Email, request.Site, request.FoundationDate, 
-            request.StateRegistration, request.MunicipalRegistration, request.Segment, request.CompanySize, request.UserId, request.Status, 
+        customer = new Customer(request.Cnpj, request.Name, request.Telephone, request.Cellphone, request.Email, request.Site, request.FoundationDate,
+            request.StateRegistration, request.MunicipalRegistration, request.Segment, request.CompanySize, request.UserId, request.Status,
             request.BusinessArea, request.Classification, request.Type, request.Origin);
-
-        foreach (var address in request.Addresses)
-        {
-            customer.AddAddress(address.Street, address.Number, address.Complement, address.District, address.ZipCode, address.City, address.State);
-        }
-
-        foreach (var contact in request.Contacts)
-        {
-            customer.AddContact(contact.Name, contact.Telephone, contact.CellPhone, contact.WhatsApp, contact.Email, contact.Department, contact.Position);
-        }
 
         _customerRepository.Add(customer);
 
-        await _customerRepository.UnitOfWork.Commit();
+        var (success, operationType) = await _customerRepository.UnitOfWork.CommitDetailed();
+
+        AddHistoric(customer, success, operationType);
 
         return CustomResponse();
     }
@@ -100,6 +96,8 @@ public class CustomerController : MainController
     [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
     public async Task<IActionResult> Put(Guid customerId, UpdateCustomerRequest request)
     {
+        if (!ModelState.IsValid) return CustomResponse(ModelState);
+
         var customer = await _customerRepository.GetById(customerId);
 
         if (customer is null)
@@ -108,13 +106,15 @@ public class CustomerController : MainController
             return CustomResponse();
         }
 
-        customer.Update(request.Telephone, request.Cellphone, request.Email, request.Site, request.FoundationDate, request.StateRegistration, 
-            request.MunicipalRegistration, request.Segment, request.CompanySize, request.UserId, request.Status, request.BusinessArea, 
+        customer.Update(request.Telephone, request.Cellphone, request.Email, request.Site, request.FoundationDate, request.StateRegistration,
+            request.MunicipalRegistration, request.Segment, request.CompanySize, request.UserId, request.Status, request.BusinessArea,
             request.Classification, request.Type, request.Origin);
 
         _customerRepository.Update(customer);
 
-        await _customerRepository.UnitOfWork.Commit();
+        var (success, operationType) = await _customerRepository.UnitOfWork.CommitDetailed();
+
+        AddHistoric(customer, success, operationType);
 
         return CustomResponse();
     }
@@ -136,8 +136,18 @@ public class CustomerController : MainController
 
         _customerRepository.Remove(customer);
 
-        await _customerRepository.UnitOfWork.Commit();
+        var (success, operationType) = await _customerRepository.UnitOfWork.CommitDetailed();
+
+        AddHistoric(customer, success, operationType);
 
         return CustomResponse();
-    }    
+    }
+
+    private Task AddHistoric(Customer customer, bool succeded, OperationType operationType)
+    {
+        if (succeded && operationType != OperationType.None)
+            _ = _customerHistHttpService.PostAsync(customer, operationType);
+
+        return Task.CompletedTask;
+    }
 }

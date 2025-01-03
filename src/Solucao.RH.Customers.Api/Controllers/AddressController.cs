@@ -1,11 +1,14 @@
 ﻿using Api.Responses;
 using Api.Service.Controllers;
 using AutoMapper;
+using Common.Core.Enums;
 using Common.Notifications.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Solucao.RH.Customers.Api.Dto.Request;
 using Solucao.RH.Customers.Api.Dto.Responses;
+using Solucao.RH.Customers.Business.Interfaces.HttpServices;
 using Solucao.RH.Customers.Business.Interfaces.Repositories;
+using Solucao.RH.Customers.Business.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
 
@@ -16,20 +19,25 @@ namespace Solucao.RH.Customers.Api.Controllers;
 public class AddressController : MainController
 {
     private readonly ICustomerRepository _customerRepository;
+    private readonly ICustomerHistHttpService _customerHistHttpService;
     private readonly IMapper _mapper;
 
-    public AddressController(INotificationHandler notification, ICustomerRepository customerRepository, IMapper mapper) : base(notification)
+    public AddressController(INotificationHandler notification, ICustomerRepository customerRepository, IMapper mapper, ICustomerHistHttpService customerHistHttpService) : base(notification)
     {
         _customerRepository = customerRepository;
         _mapper = mapper;
+        _customerHistHttpService = customerHistHttpService;
     }
 
     [HttpGet]
     [SwaggerOperation(Summary = "Serviço que obtem todos os endereços de um cliente/empresa cadastrada em forma de lista")]
-    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(IEnumerable<AddressResponse>))]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(AddressesResponse))]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
     public async Task<IActionResult> Get(Guid customerId)
-        => CustomResponse(_mapper.Map<IEnumerable<AddressResponse>>((await _customerRepository.GetById(customerId)).Addresses));
+        => CustomResponse(new AddressesResponse(customerId)
+        {
+            Addresses = _mapper.Map<ICollection<AddressResponse>>((await _customerRepository.GetById(customerId))?.Addresses)
+        });
 
     [HttpPost]
     [SwaggerOperation(Summary = "Serviço para cadastrar um novo endereço para um cliente/empresa existente")]
@@ -46,15 +54,17 @@ public class AddressController : MainController
             return CustomResponse();
         }
 
-        customer.AddAddress(request.Street, request.Number, request.Complement, request.District, request.ZipCode, request.City, request.State);
+        Address address = new(customer.Id, request.Street, request.Number, request.Complement, request.District, request.ZipCode, request.City, request.State, request.Country);
 
-        _customerRepository.Update(customer);
+        _customerRepository.Add(address);
 
-        await _customerRepository.UnitOfWork.Commit();
+        var (success, operationType) = await _customerRepository.UnitOfWork.CommitDetailed();
+
+        AddHistoric(address, success, operationType);
 
         return CustomResponse();
     }
-   
+
     [HttpPut("{addressId}")]
     [SwaggerOperation(Summary = "Serviço para alterar os dados de um endereço existente")]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
@@ -78,11 +88,13 @@ public class AddressController : MainController
             return CustomResponse();
         }
 
-        address.Update(request.Street, request.Number, request.Complement, request.District, request.ZipCode, request.City, request.State);
+        address.Update(request.Street, request.Number, request.Complement, request.District, request.ZipCode, request.City, request.State, request.Country);
 
         _customerRepository.Update(address);
 
-        await _customerRepository.UnitOfWork.Commit();
+        var (success, operationType) = await _customerRepository.UnitOfWork.CommitDetailed();
+
+        AddHistoric(address, success, operationType);
 
         return CustomResponse();
     }
@@ -112,8 +124,18 @@ public class AddressController : MainController
 
         _customerRepository.Remove(address);
 
-        await _customerRepository.UnitOfWork.Commit();
+        var (success, operationType) = await _customerRepository.UnitOfWork.CommitDetailed();
+
+        AddHistoric(address, success, operationType);
 
         return CustomResponse();
+    }
+
+    private Task AddHistoric(Address address, bool succeded, OperationType operationType)
+    {
+        if (succeded && operationType != OperationType.None)
+            _ = _customerHistHttpService.PostAsync(address, operationType);
+
+        return Task.CompletedTask;
     }
 }

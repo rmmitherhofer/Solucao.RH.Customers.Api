@@ -1,4 +1,6 @@
 ﻿using Api.Service.Configurations;
+using SnapTrace.Configurations.Settings;
+using SnapTrace.Enums;
 
 namespace Solucao.RH.Customers.Api.Configurations;
 
@@ -9,10 +11,13 @@ public static class ApiConfiguration
         ArgumentNullException.ThrowIfNull(services, nameof(IServiceCollection));
         ArgumentNullException.ThrowIfNull(configuration, nameof(IConfiguration));
 
-        services.AddCoreApiConfig(configuration, environment);
+        SnapTraceSettings snapTraceSettings = new(ProjectType.Api, true);
+
+        services.AddCoreApiConfig(configuration, environment, new(snapTraceSettings));
 
         services.AddRepositories();
         services.AddAutoMapper();
+        services.AddHttpServices(configuration);
         services.AddDbContext(configuration);
 
         return services;

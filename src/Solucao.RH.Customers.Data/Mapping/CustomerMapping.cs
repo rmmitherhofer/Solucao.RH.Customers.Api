@@ -41,6 +41,9 @@ public class CustomerMapping : IEntityTypeConfiguration<Customer>
         builder.Property(c => c.StateRegistration)
             .HasColumnType("varchar(150)");
 
+        builder.Property(c => c.Site)
+            .HasColumnType("varchar(150)");
+
         builder.Property(c => c.MunicipalRegistration)
             .HasColumnType("varchar(150)");
 
@@ -53,8 +56,7 @@ public class CustomerMapping : IEntityTypeConfiguration<Customer>
         builder.Property(c => c.UserId);
 
         builder.Property(c => c.Status)
-            .IsRequired()
-            .HasColumnType("varchar(150)");
+            .IsRequired();
 
         builder.Property(c => c.BusinessArea)
             .HasColumnType("varchar(150)");
