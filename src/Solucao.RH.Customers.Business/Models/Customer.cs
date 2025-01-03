@@ -1,5 +1,6 @@
 ﻿using Core.DomainObjects;
 using Core.ValueObjects;
+using Solucao.RH.Customers.Business.Enums;
 
 namespace Solucao.RH.Customers.Business.Models;
 
@@ -18,7 +19,7 @@ public class Customer : Entity, IAggregateRoot
     public string? Segment { get; private set; }
     public string? CompanySize { get; private set; }
     public Guid? UserId { get; private set; }
-    public string Status { get; private set; }
+    public Status Status { get; private set; }
     public string? BusinessArea { get; private set; }
     public string? Classification { get; private set; }
     public string? Type { get; private set; }
@@ -34,7 +35,7 @@ public class Customer : Entity, IAggregateRoot
 
     public Customer(string cnpj, string name, string? telephone, string? cellphone, string? email, string? site,
         DateTime? foundationDate, string? stateRegistration, string? municipalRegistration, string? segment, string? companySize,
-        Guid? userId, string status, string? businessArea, string? classification, string? type, string? origin)
+        Guid? userId, Status status, string? businessArea, string? classification, string? type, string? origin)
     {
         Cnpj = new Cnpj(cnpj).Number;
         Name = name;
@@ -57,7 +58,7 @@ public class Customer : Entity, IAggregateRoot
 
     public void Update(string? telephone, string? cellphone, string? email, string? site,
         DateTime? foundationDate, string? stateRegistration, string? municipalRegistration, string? segment, string? companySize,
-        Guid? userId, string status, string? businessArea, string? classification, string? type, string? origin)
+        Guid? userId, Status status, string? businessArea, string? classification, string? type, string? origin)
     {
         Telephone = telephone;
         Cellphone = cellphone;

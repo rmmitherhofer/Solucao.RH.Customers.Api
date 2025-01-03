@@ -1,31 +1,29 @@
-﻿using Api.Responses;
+﻿using Common.Core.Enums;
+using Solucao.RH.Customers.Business.Enums;
 
-namespace Solucao.RH.Customers.Api.Dto.Responses;
+namespace Solucao.RH.Customers.Anticorruption.Dto.HttpRequest;
 
-/// <summary>
-/// Contato
-/// </summary>
-public class ContactResponse : Response
+public class ContactHttpRequest
 {
     /// <summary>
-    /// Id
+    /// Id do contato
     /// </summary>
-    public Guid Id { get; set; }
+    public Guid ContactId { get; set; }
     /// <summary>
     /// Nome do contato
-    /// </summary>
+    /// </summary>    
     public string Name { get; set; }
     /// <summary>
     /// Numero do telefone
-    /// </summary>
+    /// </summary>    
     public string? Telephone { get; set; }
     /// <summary>
     /// Numero de celular
-    /// </summary>
+    /// </summary>    
     public string? CellPhone { get; set; }
     /// <summary>
     /// Numero de Whatsapp
-    /// </summary>
+    /// </summary>    
     public string? WhatsApp { get; set; }
     /// <summary>
     /// Endereço de e-mail
@@ -33,30 +31,31 @@ public class ContactResponse : Response
     public string? Email { get; set; }
     /// <summary>
     /// Departamento de atuação
-    /// </summary>
+    /// </summary>    
     public string? Department { get; set; }
     /// <summary>
     /// Posição ou cargo do responsavel
-    /// </summary>
+    /// </summary>    
     public string? Position { get; set; }
     /// <summary>
     /// Removido logicamente
     /// </summary>
     public bool IsDeleted { get; set; }
-}
-
-
-/// <summary>
-/// Contatos
-/// </summary>
-public class ContactsResponse(Guid customerId)
-{
     /// <summary>
     /// Id do cliente
     /// </summary>
-    public Guid CustomerId => customerId;
+    public Guid CustomerId { get; set; }
     /// <summary>
-    /// Lista de contatos
+    /// Data de registro
     /// </summary>
-    public ICollection<ContactResponse>? Contacts { get; set; }
+    public DateTime RegistrationDate { get; set; }
+    /// <summary>
+    /// Data de alteração
+    /// </summary>
+    public DateTime? DateChanged { get; set; }
+
+    /// <summary>
+    /// Tipo de operação I Inclusao, U atualização, D Remoção
+    /// </summary>
+    public OperationType OperationType { get; set; }
 }

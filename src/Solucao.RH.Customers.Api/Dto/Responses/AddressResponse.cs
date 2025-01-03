@@ -2,8 +2,16 @@
 
 namespace Solucao.RH.Customers.Api.Dto.Responses;
 
+/// <summary>
+/// Endereço
+/// </summary>
 public class AddressResponse : Response
 {
+    /// <summary>
+    /// Id do endereço
+    /// </summary>
+    public Guid Id { get; set; }
+
     /// <summary>
     /// Logradouro - Nome da Rua, Avenida, Estrada do endereço
     /// </summary>
@@ -32,4 +40,20 @@ public class AddressResponse : Response
     /// Estado
     /// </summary>
     public string State { get; set; }
+}
+
+
+/// <summary>
+/// Endereços
+/// </summary>
+public class AddressesResponse(Guid customerId)
+{
+    /// <summary>
+    /// Id do cliente
+    /// </summary>
+    public Guid CustomerId => customerId;
+    /// <summary>
+    /// Lista de endereços
+    /// </summary>
+    public ICollection<AddressResponse>? Addresses { get; set; }
 }

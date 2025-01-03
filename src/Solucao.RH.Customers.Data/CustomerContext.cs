@@ -1,4 +1,5 @@
 ﻿using Api.Core;
+using Common.Core.Enums;
 using Common.Notifications.Interfaces;
 using Common.Notifications.Messages;
 using FluentValidation.Results;
@@ -43,25 +44,27 @@ public class CustomerContext(DbContextOptions<CustomerContext> options, INotific
         base.OnModelCreating(modelBuilder);
     }
 
+    public async Task<(bool, OperationType)> CommitDetailed()
+    {
+        var operationType = ValidateChange();
+
+        var success = await SaveChangesAsync();
+        
+        return (success, operationType);
+    }
+
     public async Task<bool> Commit()
     {
-        foreach (var entry in ChangeTracker.Entries().Where(entry => entry.Entity.GetType().GetProperty(RegistrationDate) != null))
-        {
-            if (entry.State == EntityState.Added)
-            {
-                entry.Property(RegistrationDate).CurrentValue = DateTime.Now;
-            }
+        ValidateChange();
 
-            if (entry.State == EntityState.Modified)
-            {
-                entry.Property(RegistrationDate).IsModified = false;
+        var success = await SaveChangesAsync();
 
-                entry.Property(DateChanged).CurrentValue = DateTime.Now;
-            }
-        }
+        return (success);
+    }
 
+    private async Task<bool> SaveChangesAsync()
+    {
         var success = false;
-
         try
         {
             if (_notification.HasNotifications()) return success;
@@ -74,5 +77,30 @@ public class CustomerContext(DbContextOptions<CustomerContext> options, INotific
             ConsoleLog.LogCrit(ex.Message);
         }
         return success;
+    }
+    private OperationType ValidateChange()
+    {
+        OperationType operationType = OperationType.None;
+        foreach (var entry in ChangeTracker.Entries().Where(entry => entry.Entity.GetType().GetProperty(RegistrationDate) != null))
+        {
+            if (entry.State == EntityState.Added)
+            {
+                entry.Property(RegistrationDate).CurrentValue = DateTime.Now;
+                operationType = OperationType.Added;
+            }
+
+            if (entry.State == EntityState.Modified)
+            {
+                entry.Property(RegistrationDate).IsModified = false;
+
+                entry.Property(DateChanged).CurrentValue = DateTime.Now;
+
+                operationType = OperationType.Modified;
+            }
+
+            if (entry.State == EntityState.Deleted)
+                operationType = OperationType.Deleted;
+        }
+        return operationType;
     }
 }

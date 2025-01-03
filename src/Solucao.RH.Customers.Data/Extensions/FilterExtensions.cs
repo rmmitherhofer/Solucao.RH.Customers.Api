@@ -22,8 +22,8 @@ public static class FilterExtensions
         if (!string.IsNullOrEmpty(filter.Cellphone))
             query = query.Where(c => c.Cellphone.Trim().ToLower().Contains(filter.Cellphone.Trim().ToLower()));
 
-        if (!string.IsNullOrEmpty(filter.Status))
-            query = query.Where(c => c.Status.Trim().ToLower().Contains(filter.Status.Trim().ToLower()));
+        if (filter.Status.HasValue)
+            query = query.Where(c => c.Status == filter.Status);
 
         if (filter.StartDate.HasValue)
             query = query.Where(c => c.RegistrationDate >= filter.StartDate.Value);

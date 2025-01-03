@@ -1,4 +1,5 @@
-﻿using Solucao.RH.Customers.Api.Configurations;
+﻿using Solucao.RH.Customers.Anticorruption.AutoMapper;
+using Solucao.RH.Customers.Api.Configurations;
 using Solucao.RH.Customers.Api.Configurations.AutoMapper;
 using Solucao.RH.Customers.Business.Interfaces.Repositories;
 using Solucao.RH.Customers.Data.Repositories;
@@ -17,7 +18,7 @@ public static class DependencyInjectionConfiguration
 
     public static IServiceCollection AddAutoMapper(this IServiceCollection services)
     {
-        services.AddAutoMapper(typeof(FilterRequestToFilterProfile), typeof(EntityToResponseProfile));
+        services.AddAutoMapper(typeof(FilterRequestToFilterProfile), typeof(EntityToResponseProfile), typeof(EntityToHttpRequestProfile));
 
         return services;
     }

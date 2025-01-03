@@ -17,6 +17,7 @@ public static class ApiConfiguration
 
         services.AddRepositories();
         services.AddAutoMapper();
+        services.AddHttpServices(configuration);
         services.AddDbContext(configuration);
 
         return services;

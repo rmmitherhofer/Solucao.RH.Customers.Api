@@ -35,7 +35,11 @@ public class AddressMapping : IEntityTypeConfiguration<Address>
             .IsRequired(); 
 
         builder.Property(a => a.State)
-            .HasColumnType("varchar(2)")
+            .HasColumnType("varchar(120)")
+            .IsRequired();
+
+        builder.Property(a => a.Country)
+            .HasColumnType("varchar(120)")
             .IsRequired();
 
         builder.Property(a => a.IsDeleted)
