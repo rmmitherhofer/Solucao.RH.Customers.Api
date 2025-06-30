@@ -2,9 +2,11 @@
 using Api.Service.Controllers;
 using AutoMapper;
 using Common.Core.Enums;
+using Common.Core.Users;
 using Common.Notifications.Interfaces;
 using Core.ValueObjects;
 using Extensoes;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Solucao.RH.Customers.Api.Dto.Request;
 using Solucao.RH.Customers.Api.Dto.Responses;
@@ -14,6 +16,7 @@ using Solucao.RH.Customers.Business.Interfaces.Repositories;
 using Solucao.RH.Customers.Business.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
+using System.Security.Claims;
 
 namespace Solucao.RH.Customers.Api.Controllers;
 

@@ -3,6 +3,7 @@ using Common.Core.Enums;
 using Common.Http;
 using Common.Notifications.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Solucao.RH.Customers.Anticorruption.Dto.HttpRequest;
 using Solucao.RH.Customers.Business.Interfaces.HttpServices;
 using Solucao.RH.Customers.Business.Models;
@@ -16,7 +17,8 @@ public class CustomerHistHttpService : HttpService, ICustomerHistHttpService
     public CustomerHistHttpService(HttpClient httpClient, 
         IHttpContextAccessor httpContextAccessor, 
         INotificationHandler notification, 
-        IMapper mapper) : base(httpClient, httpContextAccessor, notification)
+        ILogger<CustomerHistHttpService> logger,
+        IMapper mapper) : base(httpClient, httpContextAccessor, notification, logger)
     {
         _mapper = mapper;
     }

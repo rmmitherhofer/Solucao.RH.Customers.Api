@@ -40,6 +40,10 @@ public class AddressResponse : Response
     /// Estado
     /// </summary>
     public string State { get; set; }
+    /// <summary>
+    /// Pais
+    /// </summary>
+    public string Country { get; set; }
 }
 
 

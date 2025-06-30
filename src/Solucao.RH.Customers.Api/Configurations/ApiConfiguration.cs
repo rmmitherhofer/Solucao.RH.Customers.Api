@@ -2,6 +2,7 @@
 using SnapTrace.Configurations.Settings;
 using SnapTrace.Enums;
 
+
 namespace Solucao.RH.Customers.Api.Configurations;
 
 public static class ApiConfiguration
@@ -20,11 +21,14 @@ public static class ApiConfiguration
         services.AddHttpServices(configuration);
         services.AddDbContext(configuration);
 
+
         return services;
     }
 
-    public static WebApplication UseApiConfig(this WebApplication app)
+    public static WebApplication UseApiConfig(this WebApplication app, IConfiguration configuration)
     {
+        ArgumentNullException.ThrowIfNull(app, nameof(IApplicationBuilder));
+
         app.UseCoreApiConfig();
 
         return app;

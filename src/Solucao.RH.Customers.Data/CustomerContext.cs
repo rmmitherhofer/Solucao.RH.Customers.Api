@@ -10,10 +10,11 @@ using Solucao.RH.Customers.Business.Models;
 
 namespace Solucao.RH.Customers.Data;
 
-public class CustomerContext(DbContextOptions<CustomerContext> options, INotificationHandler notification) : DbContext(options), IUnitOfWork
+public class CustomerContext(DbContextOptions<CustomerContext> options, INotificationHandler notification, ILogger<CustomerContext> logger) : DbContext(options), IUnitOfWork
 {
     private const string RegistrationDate = nameof(RegistrationDate);
     private const string DateChanged = nameof(DateChanged);
+    private readonly ILogger<CustomerContext> _logger = logger;
 
     private readonly INotificationHandler _notification = notification;
 
@@ -74,7 +75,8 @@ public class CustomerContext(DbContextOptions<CustomerContext> options, INotific
         catch (Exception ex)
         {
             _notification.Notify(new Notification(LogLevel.Critical, ex.GetType().Name, "SQL-Server", ex.Message));
-            ConsoleLog.LogCrit(ex.Message);
+
+            _logger.LogCrit(ex.Message);
         }
         return success;
     }

@@ -1,4 +1,5 @@
 ﻿using Api.Requests;
+using Solucao.RH.Customers.Business.Enums;
 
 namespace Solucao.RH.Customers.Api.Dto.Request;
 
@@ -28,6 +29,6 @@ public class CustomerFilterRequest : FilterRequest
     /// <summary>
     /// Status do cadastro
     /// </summary>
-    public string Status { get; set; }
+    public Status? Status { get; set; }
 }
 

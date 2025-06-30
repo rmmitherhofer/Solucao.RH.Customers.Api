@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "resource", "resource", "{12
 		Dockerfile = Dockerfile
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Solucao.RH.Customers.Anticorruption", "src\Solucao.RH.Customers.Anticorruption\Solucao.RH.Customers.Anticorruption.csproj", "{236DE755-38EB-4CBF-A8D7-4AB6BED5C0AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Solucao.RH.Customers.Anticorruption", "src\Solucao.RH.Customers.Anticorruption\Solucao.RH.Customers.Anticorruption.csproj", "{236DE755-38EB-4CBF-A8D7-4AB6BED5C0AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

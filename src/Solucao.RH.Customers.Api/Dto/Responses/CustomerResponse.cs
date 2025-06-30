@@ -1,4 +1,5 @@
 ﻿using Api.Responses;
+using Solucao.RH.Customers.Business.Enums;
 
 namespace Solucao.RH.Customers.Api.Dto.Responses;
 
@@ -63,7 +64,7 @@ public class CustomerResponse : Response
     /// <summary>
     /// Status do cadastro
     /// </summary>
-    public string Status { get; set; }
+    public Status Status { get; set; }
     /// <summary>
     /// Area de negocio
     /// </summary>
