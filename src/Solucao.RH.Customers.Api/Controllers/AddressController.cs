@@ -3,7 +3,6 @@ using Api.Service.Controllers;
 using AutoMapper;
 using Common.Core.Enums;
 using Common.Notifications.Interfaces;
-using Logs.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Solucao.RH.Customers.Api.Dto.Request;
 using Solucao.RH.Customers.Api.Dto.Responses;
@@ -32,22 +31,6 @@ public class AddressController : MainController
         _logger = logger;
     }
 
-
-    [HttpGet("teste")]
-    [SwaggerOperation(Summary = "Serviço que obtem todos os endereços de um cliente/empresa cadastrada em forma de lista")]
-    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(AddressesResponse))]
-    [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
-    public async Task<IActionResult> Teste()
-    {
-        _logger.LogInfo("Teste de log");
-
-        Notify(LogLevel.Information, "Teste", "Teste de notificação");
-
-        if(IsValid())
-            return CustomResponse();
-
-        return CustomResponse();
-    }
 
 
     [HttpGet]

@@ -16,7 +16,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<!--<PackageReference Include="MitherPack.Api.Data.Framework" Version="1.0.2" />-->
+	  <PackageReference Include="MitherPack.Api.Data.Framework" Version="9.0.0" />
 	</ItemGroup>
 
 </Project>

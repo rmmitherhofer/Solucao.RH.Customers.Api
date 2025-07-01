@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
-    <!--<PackageReference Include="MitherPack.Common.Http" Version="1.0.1" />-->
+    <PackageReference Include="MitherPack.Common.Http" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>

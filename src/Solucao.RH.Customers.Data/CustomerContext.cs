@@ -1,9 +1,8 @@
 ﻿using Api.Core;
 using Common.Core.Enums;
+using Common.Extensions;
 using Common.Notifications.Interfaces;
 using Common.Notifications.Messages;
-using FluentValidation.Results;
-using Logs.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Solucao.RH.Customers.Business.Models;
@@ -30,8 +29,6 @@ public class CustomerContext(DbContextOptions<CustomerContext> options, INotific
         {
             property.SetColumnType("varchar(150)");
         }
-
-        modelBuilder.Ignore<ValidationResult>();
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(CustomerContext).Assembly);
 

@@ -12,9 +12,7 @@ public static class ApiConfiguration
         ArgumentNullException.ThrowIfNull(services, nameof(IServiceCollection));
         ArgumentNullException.ThrowIfNull(configuration, nameof(IConfiguration));
 
-        SnapTraceSettings snapTraceSettings = new(ProjectType.Api, true);
-
-        services.AddCoreApiConfig(configuration, environment, new(snapTraceSettings));
+        services.AddCoreApiConfig(configuration, environment);
 
         services.AddRepositories();
         services.AddAutoMapper();
