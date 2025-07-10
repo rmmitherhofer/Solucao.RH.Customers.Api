@@ -1,5 +1,5 @@
-﻿using Core.DomainObjects;
-using Core.ValueObjects;
+﻿using Common.Core.DomainObjects;
+using Common.Core.ValueObjects;
 
 namespace Solucao.RH.Customers.Business.Models;
 

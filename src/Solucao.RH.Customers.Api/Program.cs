@@ -6,6 +6,6 @@ builder.Services.AddApiConfig(builder.Configuration, builder.Environment);
 
 var app = builder.Build();
 
-app.UseApiConfig(builder.Configuration);
+app.UseApiConfig();
 
 app.Run();

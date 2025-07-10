@@ -1,6 +1,6 @@
-﻿using Api.Core;
+﻿using Api.Core.Data;
 using Common.Core.Enums;
-using Common.Extensions;
+using Common.Logs.Extensions;
 using Common.Notifications.Interfaces;
 using Common.Notifications.Messages;
 using Microsoft.EntityFrameworkCore;
@@ -42,22 +42,13 @@ public class CustomerContext(DbContextOptions<CustomerContext> options, INotific
         base.OnModelCreating(modelBuilder);
     }
 
-    public async Task<(bool, OperationType)> CommitDetailed()
+    public async Task<(bool, OperationType)> Commit()
     {
         var operationType = ValidateChange();
 
         var success = await SaveChangesAsync();
-        
+
         return (success, operationType);
-    }
-
-    public async Task<bool> Commit()
-    {
-        ValidateChange();
-
-        var success = await SaveChangesAsync();
-
-        return (success);
     }
 
     private async Task<bool> SaveChangesAsync()
@@ -102,4 +93,6 @@ public class CustomerContext(DbContextOptions<CustomerContext> options, INotific
         }
         return operationType;
     }
+
+
 }

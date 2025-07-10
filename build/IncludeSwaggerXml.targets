@@ -1,0 +1,15 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Target Name="CopySwaggerXmlFiles" AfterTargets="Build">
+		<ItemGroup>
+			<SwaggerXmlDocs Include="
+        $(NuGetPackageRoot)mitherpack.api.requests\**\*.xml;
+        $(NuGetPackageRoot)mitherpack.api.responses\**\*.xml
+      " />
+		</ItemGroup>
+		<Copy
+		  SourceFiles="@(SwaggerXmlDocs)"
+		  DestinationFolder="$(OutputPath)"
+		  SkipUnchangedFiles="true"
+		  Condition="Exists('%(SwaggerXmlDocs.FullPath)')" />
+	</Target>
+</Project>

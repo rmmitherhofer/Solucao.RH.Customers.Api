@@ -1,5 +1,4 @@
-﻿using Api.Core;
-using Core.DomainObjects;
+﻿using Api.Core.Data;
 using Solucao.RH.Customers.Business.Filters;
 using Solucao.RH.Customers.Business.Models;
 

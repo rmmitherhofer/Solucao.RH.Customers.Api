@@ -1,4 +1,4 @@
-﻿using Core.ValueObjects;
+﻿using Common.Core.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Solucao.RH.Customers.Business.Models;

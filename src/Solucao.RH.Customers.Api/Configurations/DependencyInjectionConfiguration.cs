@@ -1,23 +1,15 @@
 ﻿using Solucao.RH.Customers.Anticorruption.AutoMapper;
 using Solucao.RH.Customers.Api.Configurations;
 using Solucao.RH.Customers.Api.Configurations.AutoMapper;
-using Solucao.RH.Customers.Business.Interfaces.Repositories;
-using Solucao.RH.Customers.Data.Repositories;
 
 namespace Solucao.RH.Customers.Api.Configurations;
 
 public static class DependencyInjectionConfiguration
 {
-    public static IServiceCollection AddRepositories(this IServiceCollection services)
-    {
-        services
-            .AddScoped<ICustomerRepository, CustomerRepository>();
-
-        return services;
-    }
-
     public static IServiceCollection AddAutoMapper(this IServiceCollection services)
     {
+        ArgumentNullException.ThrowIfNull(services, nameof(IServiceCollection));
+
         services.AddAutoMapper(typeof(FilterRequestToFilterProfile), typeof(EntityToResponseProfile), typeof(EntityToHttpRequestProfile));
 
         return services;

@@ -15,7 +15,7 @@ using System.Net;
 namespace Solucao.RH.Customers.Api.Controllers;
 
 [ApiVersion("1.0", Deprecated = false)]
-[Route("api/v{version:ApiVersion}/customer/{customerId}/address")]
+[Route("api/v{version:ApiVersion}/customers/{customerId}/addresses")]
 public class AddressController : MainController
 {
     private readonly ILogger<AddressController> _logger;
@@ -62,7 +62,7 @@ public class AddressController : MainController
 
         _customerRepository.Add(address);
 
-        var (success, operationType) = await _customerRepository.UnitOfWork.CommitDetailed();
+        var (success, operationType) = await _customerRepository.UnitOfWork.Commit();
 
         AddHistoric(address, success, operationType);
 
@@ -96,7 +96,7 @@ public class AddressController : MainController
 
         _customerRepository.Update(address);
 
-        var (success, operationType) = await _customerRepository.UnitOfWork.CommitDetailed();
+        var (success, operationType) = await _customerRepository.UnitOfWork.Commit();
 
         AddHistoric(address, success, operationType);
 
@@ -128,7 +128,7 @@ public class AddressController : MainController
 
         _customerRepository.Remove(address);
 
-        var (success, operationType) = await _customerRepository.UnitOfWork.CommitDetailed();
+        var (success, operationType) = await _customerRepository.UnitOfWork.Commit();
 
         AddHistoric(address, success, operationType);
 

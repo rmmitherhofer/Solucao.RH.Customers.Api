@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
 		<TargetFramework>net9.0</TargetFramework>
@@ -8,20 +8,21 @@
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 		<DockerfileContext>..\..</DockerfileContext>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		
+		<NoWarn>$(NoWarn);1591</NoWarn>
+
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.7">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.7">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
-		<PackageReference Include="MitherPack.Api.Service.Framework" Version="9.0.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
+		<PackageReference Include="MitherPack.Api.Service.Framework" Version="9.0.10" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -30,4 +31,13 @@
 		<ProjectReference Include="..\Solucao.RH.Customers.Data\Solucao.RH.Customers.Data.csproj" />
 	</ItemGroup>
 
+	<Import Project="..\..\build\IncludeSwaggerXml.targets" />
+
+	<Target Name="CopyExternalXmlDoc" AfterTargets="Build">
+		<ItemGroup>
+			<ExternalDocFiles Include="$(NuGetPackageRoot)mitherpack.api.requests\9.0.3\lib\net9.0\Api.Requests.xml" />
+			<ExternalDocFiles Include="$(NuGetPackageRoot)mitherpack.api.responses\9.0.5\lib\net9.0\Api.Responses.xml" />
+		</ItemGroup>
+		<Copy SourceFiles="@(ExternalDocFiles)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" />
+	</Target>
 </Project>

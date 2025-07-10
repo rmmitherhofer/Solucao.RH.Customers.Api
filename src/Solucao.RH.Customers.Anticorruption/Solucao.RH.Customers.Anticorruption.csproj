@@ -1,23 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="13.0.1" />
-    <PackageReference Include="MitherPack.Common.Http" Version="9.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="14.0.0" />
+		<PackageReference Include="NedMonitor.Http" Version="9.0.9" />
+		<!--<PackageReference Include="MitherPack.Common.Http" Version="9.0.7" />-->
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Solucao.RH.Customers.Business\Solucao.RH.Customers.Business.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Solucao.RH.Customers.Business\Solucao.RH.Customers.Business.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Dto\HttpResponse\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="Dto\HttpResponse\" />
+	</ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿using Core.DomainObjects;
+﻿using Common.Core.DomainObjects;
 
 namespace Solucao.RH.Customers.Business.Models;
 

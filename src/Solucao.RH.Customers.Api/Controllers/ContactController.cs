@@ -60,7 +60,7 @@ public class ContactController : MainController
 
         _customerRepository.Add(contact);
 
-        var (success, operationType) = await _customerRepository.UnitOfWork.CommitDetailed();
+        var (success, operationType) = await _customerRepository.UnitOfWork.Commit();
 
         AddHistoric(contact, success, operationType);
 
@@ -96,7 +96,7 @@ public class ContactController : MainController
 
         _customerRepository.Update(contact);
 
-        var (success, operationType) = await _customerRepository.UnitOfWork.CommitDetailed();
+        var (success, operationType) = await _customerRepository.UnitOfWork.Commit();
 
         AddHistoric(contact, success, operationType);
 
@@ -128,7 +128,7 @@ public class ContactController : MainController
 
         _customerRepository.Remove(contact);
 
-        var (success, operationType) = await _customerRepository.UnitOfWork.CommitDetailed();
+        var (success, operationType) = await _customerRepository.UnitOfWork.Commit();
 
         AddHistoric(contact, success, operationType);
 

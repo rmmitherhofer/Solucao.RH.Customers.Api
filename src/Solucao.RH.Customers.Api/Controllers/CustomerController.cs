@@ -2,11 +2,9 @@
 using Api.Service.Controllers;
 using AutoMapper;
 using Common.Core.Enums;
-using Common.Core.Users;
+using Common.Core.ValueObjects;
+using Common.Logs.Extensions;
 using Common.Notifications.Interfaces;
-using Core.ValueObjects;
-using Extensoes;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Solucao.RH.Customers.Api.Dto.Request;
 using Solucao.RH.Customers.Api.Dto.Responses;
@@ -16,36 +14,34 @@ using Solucao.RH.Customers.Business.Interfaces.Repositories;
 using Solucao.RH.Customers.Business.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
-using System.Security.Claims;
 
 namespace Solucao.RH.Customers.Api.Controllers;
 
 [ApiVersion("1.0", Deprecated = false)]
-[Route("api/v{version:ApiVersion}/customer")]
+[Route("api/v{version:ApiVersion}/customers")]
 public class CustomerController : MainController
 {
+    private readonly ILogger<CustomerController> _logger;
     private readonly ICustomerRepository _customerRepository;
     private readonly ICustomerHistHttpService _customerHistHttpService;
     private readonly IMapper _mapper;
 
-    public CustomerController(INotificationHandler notification, ICustomerRepository customerRepository, IMapper mapper, ICustomerHistHttpService customerHistHttpService) : base(notification)
+    public CustomerController(INotificationHandler notification,
+        ICustomerRepository customerRepository,
+        IMapper mapper,
+        ICustomerHistHttpService customerHistHttpService,
+        ILogger<CustomerController> logger) : base(notification)
     {
         _customerRepository = customerRepository;
         _mapper = mapper;
         _customerHistHttpService = customerHistHttpService;
+        _logger = logger;
     }
 
     [HttpGet]
-    [SwaggerOperation(Summary = "Serviço que obtem todos os clientes/empresas cadastradas em forma de lista")]
-    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(IEnumerable<CustomerResponse>))]
-    [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
-    public async Task<IActionResult> Get()
-        => CustomResponse(_mapper.Map<IEnumerable<CustomerResponse>>(await _customerRepository.GetAll()));
-
-    [HttpGet("paginate")]
-    [SwaggerOperation(Summary = "Serviço que obtem todos os clientes/empresas cadastradas em forma de lista paginada")]
+    [SwaggerOperation(Tags = new[] { "Customers" })]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(CustomersPaginatedResponse))]
-    [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ApiResponse))]
     public async Task<IActionResult> Get([FromQuery] CustomerFilterRequest request)
     {
         var (customers, pageCount, totalRecords) = await _customerRepository.GetPaginated(_mapper.Map<CustomerFilter>(request));
@@ -55,27 +51,37 @@ public class CustomerController : MainController
         return CustomResponse(response);
     }
 
-    [HttpGet("{customerId}")]
-    [SwaggerOperation(Summary = "Serviço para obter um cliente/empresa atraves do ID")]
+    [HttpGet("{id:guid}")]
+    [SwaggerOperation(Tags = new[] { "Customers" })]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(CustomerResponse))]
-    [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
-    public async Task<IActionResult> Get(Guid customerId)
-        => CustomResponse(_mapper.Map<CustomerResponse>(await _customerRepository.GetById(customerId)));
+    [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ApiResponse))]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ApiResponse))]
+    public async Task<IActionResult> Get(Guid id)
+    {
+        var customer = await _customerRepository.GetById(id);
+
+        if (customer is null)
+            return CustomResponse(new NotFoundResponse($"Customer with Id {id} not found"));
+
+        return CustomResponse(_mapper.Map<CustomerResponse>(customer));
+    }
 
     [HttpPost]
-    [SwaggerOperation(Summary = "Serviço para cadastrar um novo cliente/empresa")]
+    [SwaggerOperation(Tags = new[] { "Customers" })]
     [ProducesResponseType((int)HttpStatusCode.Created)]
-    [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ValidationResponse))]
-    [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ApiResponse))]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ApiResponse))]
     public async Task<IActionResult> Post(AddCustomerRequest request)
     {
+        _logger.LogInfo("Creating customer with Name: {Customer}", request.Name);
+
         if (!ModelState.IsValid) return CustomResponse(ModelState);
 
         var customer = await _customerRepository.GetByCnpj(new Cnpj(request.Cnpj).Number);
 
         if (customer is not null)
         {
-            Notify(nameof(request.Cnpj), $"Cliente portador do CNPJ {request.Cnpj.CnpjMask()} ja cadastrado na base de dados.");
+            Notify(nameof(request.Cnpj), "A customer with this CNPJ already exists.");
             return CustomResponse();
         }
 
@@ -85,29 +91,29 @@ public class CustomerController : MainController
 
         _customerRepository.Add(customer);
 
-        var (success, operationType) = await _customerRepository.UnitOfWork.CommitDetailed();
+        var (success, operationType) = await _customerRepository.UnitOfWork.Commit();
 
-        AddHistoric(customer, success, operationType);
+        _ = AddHistoric(customer, success, operationType);
 
         return CustomResponse();
     }
 
-    [HttpPut("{customerId}")]
-    [SwaggerOperation(Summary = "Serviço para alterar os dados de um cliente/empresa existente")]
+    [HttpPut("{id:guid}")]
+    [SwaggerOperation(Tags = new[] { "Customers" })]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
-    [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ValidationResponse))]
-    [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
-    public async Task<IActionResult> Put(Guid customerId, UpdateCustomerRequest request)
+    [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ApiResponse))]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ApiResponse))]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ApiResponse))]
+    public async Task<IActionResult> Put(Guid id, UpdateCustomerRequest request)
     {
+        _logger.LogInfo("Updating customer with Id: {CustomerId}", id);
+
         if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-        var customer = await _customerRepository.GetById(customerId);
+        var customer = await _customerRepository.GetById(id);
 
         if (customer is null)
-        {
-            Notify(nameof(customerId), $"Cliente {customerId} nao localizado.");
-            return CustomResponse();
-        }
+            return CustomResponse(new NotFoundResponse($"Customer with Id {id} not found"));
 
         customer.Update(request.Telephone, request.Cellphone, request.Email, request.Site, request.FoundationDate, request.StateRegistration,
             request.MunicipalRegistration, request.Segment, request.CompanySize, request.UserId, request.Status, request.BusinessArea,
@@ -115,33 +121,33 @@ public class CustomerController : MainController
 
         _customerRepository.Update(customer);
 
-        var (success, operationType) = await _customerRepository.UnitOfWork.CommitDetailed();
+        var (success, operationType) = await _customerRepository.UnitOfWork.Commit();
 
-        AddHistoric(customer, success, operationType);
+        _ = AddHistoric(customer, success, operationType);
 
         return CustomResponse();
     }
 
-    [HttpDelete("{customerId}")]
-    [SwaggerOperation(Summary = "Serviço para remover os dados de um cliente/empresa existente")]
+    [HttpDelete("{id:guid}")]
+    [SwaggerOperation(Tags = new[] { "Customers" })]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
-    [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ValidationResponse))]
-    [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ErrorResponse))]
-    public async Task<IActionResult> Delete(Guid customerId)
+    [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ApiResponse))]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ApiResponse))]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ApiResponse))]
+    public async Task<IActionResult> Delete(Guid id)
     {
-        var customer = await _customerRepository.GetById(customerId);
+        _logger.LogInfo("Deleting customer with Id: {CustomerId}", id);
+
+        var customer = await _customerRepository.GetById(id);
 
         if (customer is null)
-        {
-            Notify(nameof(customerId), $"Cliente {customerId} nao localizado.");
-            return CustomResponse();
-        }
+            return CustomResponse(new NotFoundResponse($"Customer with Id {id} not found"));
 
         _customerRepository.Remove(customer);
 
-        var (success, operationType) = await _customerRepository.UnitOfWork.CommitDetailed();
+        var (success, operationType) = await _customerRepository.UnitOfWork.Commit();
 
-        AddHistoric(customer, success, operationType);
+        _ = AddHistoric(customer, success, operationType);
 
         return CustomResponse();
     }

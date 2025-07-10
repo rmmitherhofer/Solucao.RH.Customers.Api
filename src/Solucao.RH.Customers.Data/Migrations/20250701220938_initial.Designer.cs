@@ -12,7 +12,7 @@ using Solucao.RH.Customers.Data;
 namespace Solucao.RH.Customers.Data.Migrations
 {
     [DbContext(typeof(CustomerContext))]
-    [Migration("20250401003726_initial")]
+    [Migration("20250701220938_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace Solucao.RH.Customers.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.0")
+                .HasAnnotation("ProductVersion", "9.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);

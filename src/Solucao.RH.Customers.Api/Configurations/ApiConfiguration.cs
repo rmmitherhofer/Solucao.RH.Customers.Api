@@ -1,6 +1,6 @@
 ﻿using Api.Service.Configurations;
-using SnapTrace.Configurations.Settings;
-using SnapTrace.Enums;
+using Solucao.RH.Customers.Anticorruption.Configurations;
+using Solucao.RH.Customers.Data.Configurations;
 
 
 namespace Solucao.RH.Customers.Api.Configurations;
@@ -14,16 +14,14 @@ public static class ApiConfiguration
 
         services.AddCoreApiConfig(configuration, environment);
 
-        services.AddRepositories();
         services.AddAutoMapper();
         services.AddHttpServices(configuration);
         services.AddDbContext(configuration);
 
-
         return services;
     }
 
-    public static WebApplication UseApiConfig(this WebApplication app, IConfiguration configuration)
+    public static IApplicationBuilder UseApiConfig(this IApplicationBuilder app)
     {
         ArgumentNullException.ThrowIfNull(app, nameof(IApplicationBuilder));
 
