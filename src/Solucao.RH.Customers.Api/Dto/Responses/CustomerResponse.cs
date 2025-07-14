@@ -1,5 +1,5 @@
-﻿using Api.Responses;
-using Solucao.RH.Customers.Business.Enums;
+﻿using Solucao.RH.Customers.Business.Enums;
+using Zypher.Responses;
 
 namespace Solucao.RH.Customers.Api.Dto.Responses;
 

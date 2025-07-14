@@ -1,4 +1,4 @@
-﻿using Common.Core.DomainObjects;
+﻿using Zypher.Domain.Core.DomainObjects;
 
 namespace Solucao.RH.Customers.Business.Models;
 

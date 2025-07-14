@@ -1,4 +1,4 @@
-﻿using Api.Responses;
+﻿using Zypher.Responses;
 
 namespace Solucao.RH.Customers.Api.Dto.Responses;
 

@@ -1,11 +1,11 @@
-﻿using Api.Core.Data;
-using Common.Core.Enums;
-using Common.Logs.Extensions;
-using Common.Notifications.Interfaces;
-using Common.Notifications.Messages;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Solucao.RH.Customers.Business.Models;
+using Zypher.Domain.Core.Enums;
+using Zypher.Logs.Extensions;
+using Zypher.Notifications.Interfaces;
+using Zypher.Notifications.Messages;
+using Zypher.Persistence.Abstractions.Data;
 
 namespace Solucao.RH.Customers.Data;
 

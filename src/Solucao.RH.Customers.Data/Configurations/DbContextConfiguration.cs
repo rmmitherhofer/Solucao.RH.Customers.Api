@@ -3,6 +3,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using NedMonitor.EF.Configurations;
+using NedMonitor.EF.Interceptors;
 using Solucao.RH.Customers.Business.Interfaces.Repositories;
 using Solucao.RH.Customers.Data.Repositories;
 
@@ -16,11 +18,14 @@ public static class DbContextConfiguration
         ArgumentNullException.ThrowIfNull(services, nameof(IServiceCollection));
         ArgumentNullException.ThrowIfNull(configuration, nameof(IConfiguration));
 
-        services.AddDbContext<CustomerContext>(options =>
+        services.AddNedMonitorEfInterceptors();
+
+        services.AddDbContext<CustomerContext>((sp, options) =>
         {
             options.UseSqlServer(configuration.GetConnectionString(CONNECTION_CUSTOMER_KEY));
             options.EnableSensitiveDataLogging(false);
             options.UseLoggerFactory(LoggerFactory.Create(_ => { }));
+            options.AddInterceptors(sp.GetRequiredService<EfQueryCounter>());
         });
 
         services.TryAddScoped<CustomerContext>();

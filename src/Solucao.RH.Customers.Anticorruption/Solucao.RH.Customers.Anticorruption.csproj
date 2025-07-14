@@ -10,8 +10,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="14.0.0" />
-		<PackageReference Include="NedMonitor.Http" Version="9.0.9" />
-		<!--<PackageReference Include="MitherPack.Common.Http" Version="9.0.7" />-->
+		<PackageReference Include="NedMonitor.Http" Version="1.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>

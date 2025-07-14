@@ -1,10 +1,4 @@
 ﻿using AutoMapper;
-using Common.Core.Enums;
-using Common.Http;
-using Common.Http.Extensions;
-using Common.Json;
-using Common.Logs.Extensions;
-using Common.Notifications.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -12,6 +6,11 @@ using Solucao.RH.Customers.Anticorruption.Dto.HttpRequest;
 using Solucao.RH.Customers.Anticorruption.Options;
 using Solucao.RH.Customers.Business.Interfaces.HttpServices;
 using Solucao.RH.Customers.Business.Models;
+using Zypher.Domain.Core.Enums;
+using Zypher.Http;
+using Zypher.Json;
+using Zypher.Logs.Extensions;
+using Zypher.Notifications.Interfaces;
 
 namespace Solucao.RH.Customers.Anticorruption.HttpServices;
 public class CustomerHistHttpService : HttpService, ICustomerHistHttpService

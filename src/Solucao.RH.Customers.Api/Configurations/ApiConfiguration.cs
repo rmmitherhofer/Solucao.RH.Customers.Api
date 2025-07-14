@@ -1,6 +1,6 @@
-﻿using Api.Service.Configurations;
-using Solucao.RH.Customers.Anticorruption.Configurations;
+﻿using Solucao.RH.Customers.Anticorruption.Configurations;
 using Solucao.RH.Customers.Data.Configurations;
+using Zypher.Api.Foundation.Configurations;
 
 
 namespace Solucao.RH.Customers.Api.Configurations;

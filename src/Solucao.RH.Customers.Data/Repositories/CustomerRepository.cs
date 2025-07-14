@@ -1,12 +1,12 @@
-﻿using Api.Core.Data;
-using Api.Data.Extensions;
-using Common.Logs.Extensions;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Solucao.RH.Customers.Business.Filters;
 using Solucao.RH.Customers.Business.Interfaces.Repositories;
 using Solucao.RH.Customers.Business.Models;
 using Solucao.RH.Customers.Data.Extensions;
+using Zypher.Logs.Extensions;
+using Zypher.Api.Data.Extensions;
+using Zypher.Persistence.Abstractions.Data;
 
 namespace Solucao.RH.Customers.Data.Repositories;
 

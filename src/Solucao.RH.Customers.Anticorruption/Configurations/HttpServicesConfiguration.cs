@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NedMonitor.Http.Configurations;
 using NedMonitor.Http.Handlers;
 using Solucao.RH.Customers.Anticorruption.HttpServices;
 using Solucao.RH.Customers.Anticorruption.Options;
@@ -14,13 +15,15 @@ public static class HttpServicesConfiguration
         ArgumentNullException.ThrowIfNull(services, nameof(IServiceCollection));
         ArgumentNullException.ThrowIfNull(configuration, nameof(IConfiguration));
 
+        services.AddNedMonitorHttp();
         services.AddHttpServiceOptions(configuration);
 
         var settings = configuration.GetSection(CustomerHistorySettings.SECTION_NAME).Get<CustomerHistorySettings>() ?? new();
 
         services.AddHttpClient<ICustomerHistHttpService, CustomerHistHttpService>(services =>
             services.BaseAddress = new Uri(settings.BaseAddress)
-        ).AddHttpMessageHandler<NedMonitorHttpLoggingHandler>();
+        )
+            .AddHttpMessageHandler<NedMonitorHttpLoggingHandler>();
 
 
         return services;

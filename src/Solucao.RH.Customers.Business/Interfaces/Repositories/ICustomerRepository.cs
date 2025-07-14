@@ -1,6 +1,6 @@
-﻿using Api.Core.Data;
-using Solucao.RH.Customers.Business.Filters;
+﻿using Solucao.RH.Customers.Business.Filters;
 using Solucao.RH.Customers.Business.Models;
+using Zypher.Persistence.Abstractions.Data;
 
 namespace Solucao.RH.Customers.Business.Interfaces.Repositories;
 

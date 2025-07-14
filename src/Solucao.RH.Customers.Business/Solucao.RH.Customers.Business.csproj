@@ -9,7 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MitherPack.Api.Core.Framework" Version="9.0.5" />
+		<PackageReference Include="Zypher.Persistence.Abstractions" Version="1.0.1" />
 	</ItemGroup>
 
 </Project>

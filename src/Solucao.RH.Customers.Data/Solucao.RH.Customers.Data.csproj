@@ -17,7 +17,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MitherPack.Api.Data.Framework" Version="9.0.4" />
+		<PackageReference Include="NedMonitor.EF" Version="1.0.1" />
+		<PackageReference Include="Zypher.Api.Data" Version="1.0.0" />
 	</ItemGroup>
 
 </Project>

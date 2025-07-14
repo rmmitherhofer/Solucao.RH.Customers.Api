@@ -1,5 +1,5 @@
-﻿using Common.Core.DomainObjects;
-using Common.Core.ValueObjects;
+﻿using Zypher.Domain.Core.DomainObjects;
+using Zypher.Domain.Core.ValueObjects;
 
 namespace Solucao.RH.Customers.Business.Models;
 

@@ -1,5 +1,4 @@
-﻿using Common.Core.Enums;
-using Solucao.RH.Customers.Business.Enums;
+﻿using Zypher.Domain.Core.Enums;
 
 namespace Solucao.RH.Customers.Anticorruption.Dto.HttpRequest;
 

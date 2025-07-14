@@ -1,5 +1,5 @@
-﻿using Common.Core.Enums;
-using Solucao.RH.Customers.Business.Models;
+﻿using Solucao.RH.Customers.Business.Models;
+using Zypher.Domain.Core.Enums;
 
 namespace Solucao.RH.Customers.Business.Interfaces.HttpServices;
 

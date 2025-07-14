@@ -1,7 +1,7 @@
-﻿using Common.Core.ValueObjects;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Solucao.RH.Customers.Business.Models;
+using Zypher.Domain.Core.ValueObjects;
 
 namespace Solucao.RH.Customers.Data.Mapping;
 

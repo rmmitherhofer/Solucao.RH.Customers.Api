@@ -1,10 +1,4 @@
-﻿using Api.Responses;
-using Api.Service.Controllers;
-using AutoMapper;
-using Common.Core.Enums;
-using Common.Core.ValueObjects;
-using Common.Logs.Extensions;
-using Common.Notifications.Interfaces;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Solucao.RH.Customers.Api.Dto.Request;
 using Solucao.RH.Customers.Api.Dto.Responses;
@@ -14,6 +8,12 @@ using Solucao.RH.Customers.Business.Interfaces.Repositories;
 using Solucao.RH.Customers.Business.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
+using Zypher.Api.Foundation.Controllers;
+using Zypher.Domain.Core.Enums;
+using Zypher.Domain.Core.ValueObjects;
+using Zypher.Logs.Extensions;
+using Zypher.Notifications.Interfaces;
+using Zypher.Responses;
 
 namespace Solucao.RH.Customers.Api.Controllers;
 
@@ -94,6 +94,10 @@ public class CustomerController : MainController
         var (success, operationType) = await _customerRepository.UnitOfWork.Commit();
 
         _ = AddHistoric(customer, success, operationType);
+
+        Notify(nameof(request.Cnpj), "A customer with this CNPJ already exists.");
+
+        throw new Exception("Tste");
 
         return CustomResponse();
     }
